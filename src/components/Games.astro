@@ -1,0 +1,37 @@
+---
+import GameCard from '../components/GameCard.astro';
+const API_KEY = '9d682a353e7c4dbbb93d646ec55f67fa'
+const url = `https://rawg.io/api/games?token&key=${API_KEY}&dates=2023-10-01,2023-10-30&?page=1`;
+// const url = `https://rawg.io/api/games?token&key=${API_KEY}&dates=2023-10-01,2023-10-30&ordering=released&?page=1`;
+const options = {
+	method: 'GET',
+	headers: {
+		'X-RapidAPI-Key': '4c90f23a03msh834a885ed846553p1174e7jsn441c09c99722',
+		'X-RapidAPI-Host': 'video-game-calendar-release.p.rapidapi.com'
+	}
+};
+
+const response = await fetch(url, options);
+const result = await response.json();
+console.log('result',result);
+const {results} = result
+
+const games = results.map((game) =>  {
+    return {...game,released: new Date(game.released)}
+})
+
+const sortedAscGames = games.sort(
+  (objA, objB) => Number(objA.released) - Number(objB.released),
+);
+
+---
+
+
+
+<div class="grid md:grid-cols-4 xs:grid-cols-2 gap-2">
+    {sortedAscGames.map((game) => (
+        <GameCard game={game} />
+    ))}
+
+</div>
+
